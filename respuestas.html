@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SICODA - Solicitud de Documentos</title>
+    <style>
+        /* RESET BÁSICO */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        header img {
+            max-height: 60px;
+        }
+
+        /* PORTADA */
+        .portada {
+            width: 100%;
+            max-height: 250px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .portada img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 700px;
+            margin: 0 auto 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: border 0.3s;
+        }
+
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        form textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* MENSAJE DE CONFIRMACIÓN */
+        .confirmation {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            display: none;
+            text-align: center;
+        }
+
+        /* CAMPOS ADICIONALES */
+        .extra-field {
+            display: none;
+        }
+
+        @media(max-width: 768px){
+            .container {
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://raw.githubusercontent.com/Alegarciac/SICODA/main/LOGO%20HAP%20con%20R.png" alt="Logo HAP">
+    </header>
+
+    <div class="portada">
+        <img src="https://raw.githubusercontent.com/Alegarciac/SICODA/main/PORTADA.jpg" alt="Portada SICODA">
+    </div>
+
+    <div class="container">
+        <h2>Solicitud de Documentos</h2>
+        <form id="documentForm">
+            <label for="tipoSolicitud">Tipo de solicitud:</label>
+            <select id="tipoSolicitud" name="tipoSolicitud" required>
+                <option value="">Selecciona...</option>
+                <option value="ALTA">ALTA</option>
+                <option value="MODIFICACIÓN">MODIFICACIÓN</option>
+                <option value="BAJA">BAJA</option>
+            </select>
+
+            <label for="nombreDocumento">Nombre del documento:</label>
+            <input type="text" id="nombreDocumento" name="nombreDocumento" required>
+
+            <label for="tipoDocumento">Tipo de documento:</label>
+            <select id="tipoDocumento" name="tipoDocumento" required>
+                <option value="">Selecciona...</option>
+                <option value="Procedimiento">Procedimiento</option>
+                <option value="Instructivo">Instructivo</option>
+                <option value="Formato">Formato</option>
+                <option value="Política">Política</option>
+                <option value="Otro">Otro</option>
+            </select>
+
+            <label for="areaResponsable">Área responsable:</label>
+            <input type="text" id="areaResponsable" name="areaResponsable" required>
+
+            <label for="solicitante">Solicitante:</label>
+            <input type="text" id="solicitante" name="solicitante" required>
+
+            <label for="fechaSolicitud">Fecha de solicitud:</label>
+            <input type="date" id="fechaSolicitud" name="fechaSolicitud" required>
+
+            <label for="justificacion">Justificación:</label>
+            <textarea id="justificacion" name="justificacion" rows="3" required></textarea>
+
+            <!-- CAMPOS EXTRA PARA MODIFICACIÓN / BAJA -->
+            <div class="extra-field" id="modBajaFields">
+                <label for="codigoDocumento">Código del documento:</label>
+                <input type="text" id="codigoDocumento" name="codigoDocumento">
+
+                <label for="versionActual">Versión actual:</label>
+                <input type="text" id="versionActual" name="versionActual">
+            </div>
+
+            <!-- CAMPOS EXTRA SOLO PARA MODIFICACIÓN -->
+            <div class="extra-field" id="modFields">
+                <label for="seccionesAfectadas">Secciones afectadas:</label>
+                <input type="text" id="seccionesAfectadas" name="seccionesAfectadas">
+
+                <label for="descripcionCambio">Descripción del cambio:</label>
+                <textarea id="descripcionCambio" name="descripcionCambio" rows="2"></textarea>
+            </div>
+
+            <button type="submit">Enviar Solicitud</button>
+            <div class="confirmation" id="confirmationMsg">
+                ✅ Gracias, tu solicitud ha sido generada.<br>
+                ⏳ Redirigiendo al inicio...<br>
+                🎉 Te contactaremos pronto.
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const tipoSolicitud = document.getElementById('tipoSolicitud');
+        const modBajaFields = document.getElementById('modBajaFields');
+        const modFields = document.getElementById('modFields');
+        const form = document.getElementById('documentForm');
+        const confirmationMsg = document.getElementById('confirmationMsg');
+
+        tipoSolicitud.addEventListener('change', () => {
+            const value = tipoSolicitud.value;
+            if (value === 'MODIFICACIÓN') {
+                modBajaFields.style.display = 'block';
+                modFields.style.display = 'block';
+            } else if (value === 'BAJA') {
+                modBajaFields.style.display = 'block';
+                modFields.style.display = 'none';
+            } else {
+                modBajaFields.style.display = 'none';
+                modFields.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            fetch('https://script.google.com/macros/s/AKfycbwfd7FsAw29Rb-ywzFVmR7pp1itK_mJmfJvSCLIGLbhh9G1NZiLqBEv_FSRqNFG0mef/exec', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                confirmationMsg.style.display = 'block';
+                form.reset();
+                modBajaFields.style.display = 'none';
+                modFields.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    confirmationMsg.style.display = 'none';
+                }, 5000);
+            })
+            .catch(error => {
+                alert('Error al enviar la solicitud. Intenta nuevamente.');
+                console.error(error);
+            });
+        });
+    </script>
+</body>
+</html>
