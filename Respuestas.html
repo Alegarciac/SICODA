@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SICODA - Solicitud de Documentos</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f5f6fa; color: #333; }
+
+    .container { max-width: 900px; margin: 30px auto; background: #fff; padding: 25px 35px; border-radius: 15px; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+
+    .header img { width: 100%; border-radius: 12px; margin-bottom: 20px; }
+    .logo { max-width: 180px; display: block; margin: 0 auto 20px; }
+
+    h1 { text-align: center; margin-bottom: 25px; color: #2f3640; }
+
+    form { display: flex; flex-direction: column; gap: 20px; }
+    fieldset { border: 1px solid #ccc; border-radius: 12px; padding: 15px 20px; }
+    legend { font-weight: bold; padding: 0 10px; }
+
+    label { font-weight: 600; margin-bottom: 5px; display: block; }
+    input, select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    textarea { resize: vertical; }
+
+    button { background-color: #4cd137; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; }
+    button:hover { background-color: #44bd32; }
+
+    .mensaje { margin-top: 15px; padding: 14px; border-radius: 10px; background-color: #dff9fb; color: #2ecc71; font-weight: 600; display: none; text-align: center; }
+
+    .extra { display: none; }
+
+    @media (max-width: 600px) {
+        .container { padding: 20px; margin: 15px; }
+        button { font-size: 14px; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <img src="https://github.com/Alegarciac/SICODA/blob/main/LOGO%20HAP%20con%20R.png?raw=true" alt="Logo" class="logo">
+    <img src="https://github.com/Alegarciac/SICODA/blob/main/PORTADA.jpg?raw=true" alt="Portada">
+
+    <h1>Solicitud de Documentos SICODA</h1>
+
+    <form id="solicitudForm">
+        <fieldset>
+            <legend>Datos de la Solicitud</legend>
+            <label for="tipoSolicitud">Tipo de solicitud <span style="color:red;">*</span></label>
+            <select id="tipoSolicitud" name="tipoSolicitud" required>
+                <option value="">Selecciona...</option>
+                <option value="ALTA">ALTA</option>
+                <option value="MODIFICACIÓN">MODIFICACIÓN</option>
+                <option value="BAJA">BAJA</option>
+            </select>
+
+            <label for="nombreDocumento">Nombre del documento <span style="color:red;">*</span></label>
+            <input type="text" id="nombreDocumento" name="nombreDocumento" required>
+
+            <label for="tipoDocumento">Tipo de documento <span style="color:red;">*</span></label>
+            <select id="tipoDocumento" name="tipoDocumento" required>
+                <option value="">Selecciona...</option>
+                <option value="Procedimiento">Procedimiento</option>
+                <option value="Instructivo">Instructivo</option>
+                <option value="Formato">Formato</option>
+                <option value="Política">Política</option>
+                <option value="Otro">Otro</option>
+            </select>
+
+            <label for="areaResponsable">Área responsable <span style="color:red;">*</span></label>
+            <input type="text" id="areaResponsable" name="areaResponsable" required>
+
+            <label for="solicitante">Solicitante <span style="color:red;">*</span></label>
+            <input type="text" id="solicitante" name="solicitante" required>
+
+            <label for="fechaSolicitud">Fecha de solicitud <span style="color:red;">*</span></label>
+            <input type="date" id="fechaSolicitud" name="fechaSolicitud" required>
+
+            <label for="justificacion">Justificación <span style="color:red;">*</span></label>
+            <textarea id="justificacion" name="justificacion" rows="3" required></textarea>
+        </fieldset>
+
+        <fieldset class="extra" id="camposExtra">
+            <legend>Datos para MODIFICACIÓN o BAJA</legend>
+            <label for="codigoDocumento">Código del documento</label>
+            <input type="text" id="codigoDocumento" name="codigoDocumento">
+
+            <label for="versionActual">Versión actual</label>
+            <input type="text" id="versionActual" name="versionActual">
+        </fieldset>
+
+        <fieldset class="extra" id="camposModificacion">
+            <legend>Datos adicionales MODIFICACIÓN</legend>
+            <label for="seccionesAfectadas">Secciones afectadas</label>
+            <textarea id="seccionesAfectadas" name="seccionesAfectadas" rows="2"></textarea>
+
+            <label for="descripcionCambio">Descripción del cambio</label>
+            <textarea id="descripcionCambio" name="descripcionCambio" rows="2"></textarea>
+        </fieldset>
+
+        <button type="submit">Enviar solicitud</button>
+        <div class="mensaje" id="mensajeConfirmacion"></div>
+    </form>
+</div>
+
+<script>
+    const tipoSolicitud = document.getElementById('tipoSolicitud');
+    const camposExtra = document.getElementById('camposExtra');
+    const camposModificacion = document.getElementById('camposModificacion');
+    const form = document.getElementById('solicitudForm');
+    const mensaje = document.getElementById('mensajeConfirmacion');
+
+    tipoSolicitud.addEventListener('change', () => {
+        const valor = tipoSolicitud.value;
+        camposExtra.style.display = (valor === 'MODIFICACIÓN' || valor === 'BAJA') ? 'block' : 'none';
+        camposModificacion.style.display = (valor === 'MODIFICACIÓN') ? 'block' : 'none';
+    });
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(!form.checkValidity()){ form.reportValidity(); return; }
+
+        const data = {
+            tipoSolicitud: document.getElementById('tipoSolicitud').value,
+            nombreDocumento: document.getElementById('nombreDocumento').value,
+            tipoDocumento: document.getElementById('tipoDocumento').value,
+            areaResponsable: document.getElementById('areaResponsable').value,
+            solicitante: document.getElementById('solicitante').value,
+            fechaSolicitud: document.getElementById('fechaSolicitud').value,
+            justificacion: document.getElementById('justificacion').value,
+            codigoDocumento: document.getElementById('codigoDocumento').value,
+            versionActual: document.getElementById('versionActual').value,
+            seccionesAfectadas: document.getElementById('seccionesAfectadas').value,
+            descripcionCambio: document.getElementById('descripcionCambio').value
+        };
+
+        fetch('https://script.google.com/macros/s/AKfycbz1asoHNyJSV3GCOWD27pktui1XV-MJ87U9CGWbUZQHIPuf9yzCHqOhQ5AveCSfZ809ng/exec', {
+            method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+        }).then(() => {
+            mensaje.style.display = 'block';
+            mensaje.innerHTML = '✅ Gracias, tu solicitud ha sido generada.<br>⏳ Redirigiendo al inicio...<br>🎉 Te contactaremos pronto.';
+            form.reset(); camposExtra.style.display = 'none'; camposModificacion.style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { mensaje.style.display = 'none'; }, 5000);
+        }).catch(err => {
+            mensaje.style.display = 'block'; mensaje.style.color = 'red';
+            mensaje.innerHTML = '❌ Error al enviar, intenta nuevamente.';
+        });
+    });
+</script>
+</body>
+</html>
